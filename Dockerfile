@@ -36,7 +36,7 @@ Skesa
 EDirect
 Hmmer
 
-
+## this may be helpful: https://mfr.osf.io/render?url=https://osf.io/tf2mn/?action=download%26mode=render
 
 WORKDIR /blast/blastdb
 ENV BLASTDB /blast/blastdb
