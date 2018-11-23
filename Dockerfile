@@ -33,10 +33,9 @@ RUN wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/magicblast/LATEST/ncbi-mag
 RUN tar xvzf ftp://ftp.ncbi.nlm.nih.gov/blast/executables/magicblast/LATEST/ncbi-magicblast-1.4.0-x64-linux.tar.gz
 ENV PATH="/ncbi-magicblast-1.4.0/bin:${PATH}"
 
-
+RUN pip install pybedtools
 
 ## Install all this stuff:
-# BedTools
 # Samtools
 # Skesa
 # EDirect
