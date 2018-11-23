@@ -64,10 +64,20 @@ rm -rf ./${NAMEH}
 RUN wget ftp://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/edirect.tar.gz
 RUN tar -xvzf edirect.tar.gz
 RUN bash ./edirect/setup.sh
-ENV PATH="/ncbi-magicblast-1.4.0/bin:${PATH}"
+ENV PATH="/edirect/bin:${PATH}"
+
+## this will need to be updated
+
+RUN wget http://eddylab.org/software/hmmer/hmmer.tar.gz
+RUN tar -xvzf hmmer.tar.gz && \
+cd hmmer-3.2.1 && \
+./configure && \
+make && \
+make install
+
 
 # Skesa
-# Hmmer
+
 
 ## Conda (PIA)
 
