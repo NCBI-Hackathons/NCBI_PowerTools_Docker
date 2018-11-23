@@ -61,8 +61,10 @@ rm -rf ./${NAMEH}/ && \
 rm -rf ./${NAME}/ && \
 rm -rf ./${NAMEH}
 
-RUN wget ftp://ftp.ncbi.nlm.nih.gov/
-
+RUN wget ftp://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/edirect.tar.gz
+RUN tar -xvzf edirect.tar.gz
+RUN bash ./edirect/setup.sh
+ENV PATH="/ncbi-magicblast-1.4.0/bin:${PATH}"
 
 # Skesa
 # Hmmer
