@@ -75,6 +75,7 @@ cd hmmer-3.2.1 && \
 make && \
 make install
 
+## Packages that still need to be installed
 
 # Skesa
 
