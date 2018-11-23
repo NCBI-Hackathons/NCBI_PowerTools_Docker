@@ -23,7 +23,6 @@ RUN mkdir -p /blast/bin /blast/lib
 COPY --from=blastbuild /root/ncbi-blast-2.7.1+-src/c++/ReleaseMT/bin /blast/bin
 COPY --from=blastbuild /root/ncbi-blast-2.7.1+-src/c++/ReleaseMT/lib /blast/lib
 
-
 ## you need an updateable solution for this
 RUN wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-ubuntu64.tar.gz
 RUN tar xvzf https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-ubuntu64.tar.gz
@@ -35,11 +34,39 @@ ENV PATH="/ncbi-magicblast-1.4.0/bin:${PATH}"
 
 RUN pip install pybedtools
 
+ENV NAMEH htslib
+ENV ENV NAME "samtools"
+
+RUN git clone https://github.com/samtools/htslib.git && \
+cd ${NAMEH} && \
+## git reset --hard ${SHA1H} && \
+make -j 4 && \
+cd .. && \
+cp ./${NAMEH}/tabix /usr/local/bin/ && \
+cp ./${NAMEH}/bgzip /usr/local/bin/ && \
+cp ./${NAMEH}/htsfile /usr/local/bin/ && \
+strip /usr/local/bin/tabix; true && \
+strip /usr/local/bin/bgzip; true && \
+strip /usr/local/bin/htsfile; true && 
+
+
+RUN git clone https://github.com/samtools/samtools.git && \
+cd ${NAME} && \
+## git reset --hard ${SHA1} && \
+make -j 4 && \
+cp ./${NAME} /usr/local/bin/ && \
+cd .. && \
+strip /usr/local/bin/${NAME}; true && \
+rm -rf ./${NAMEH}/ && \
+rm -rf ./${NAME}/ && \
+rm -rf ./${NAMEH}
+
 ## Install all this stuff:
-# Samtools
+
 # Skesa
 # EDirect
 # Hmmer
+
 ## Conda (PIA)
 
 ## this may be helpful: https://mfr.osf.io/render?url=https://osf.io/tf2mn/?action=download%26mode=render
