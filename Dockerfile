@@ -61,10 +61,10 @@ rm -rf ./${NAMEH}/ && \
 rm -rf ./${NAME}/ && \
 rm -rf ./${NAMEH}
 
-## Install all this stuff:
+RUN wget ftp://ftp.ncbi.nlm.nih.gov/
+
 
 # Skesa
-# EDirect
 # Hmmer
 
 ## Conda (PIA)
