@@ -12,16 +12,18 @@ Readonly \
 HTML::Entities \ 
 List::MoreUtils
 
-RUN wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/LATEST/ncbi-blast-2.7.1+-src.tar.gz
-RUN tar xvzf ncbi-blast-2.7.1+-src.tar.gz
-WORKDIR /root/ncbi-blast-2.7.1+-src/c++
-RUN ./configure --with-optimization --with-dll --with-experimental=Int8GI --with-flat-makefile --prefix=/blast
-WORKDIR /root/ncbi-blast-2.7.1+-src/c++/ReleaseMT/build
-RUN make -f Makefile.flat blastdb_aliastool.exe blastdbcheck.exe blastdbcmd.exe blast_formatter.exe blastn.exe blastp.exe blastx.exe convert2blastmask.exe deltablast.exe dustmasker.exe makeblastdb.exe makembindex.exe makeprofiledb.exe psiblast.exe rpsblast.exe rpstblastn.exe segmasker.exe tblastn.exe tblastx.exe windowmasker.exe
+##RUN wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/LATEST/ncbi-blast-2.7.1+-src.tar.gz
+##RUN tar xvzf ncbi-blast-2.7.1+-src.tar.gz
+##WORKDIR /root/ncbi-blast-2.7.1+-src/c++
+##RUN ./configure --with-optimization --with-dll --with-experimental=Int8GI --with-flat-makefile --prefix=/blast
+##WORKDIR /root/ncbi-blast-2.7.1+-src/c++/ReleaseMT/build
+##RUN make -f Makefile.flat blastdb_aliastool.exe blastdbcheck.exe blastdbcmd.exe blast_formatter.exe blastn.exe blastp.exe blastx.exe convert2blastmask.exe deltablast.exe dustmasker.exe makeblastdb.exe makembindex.exe makeprofiledb.exe psiblast.exe rpsblast.exe rpstblastn.exe segmasker.exe tblastn.exe tblastx.exe windowmasker.exe
 
-RUN mkdir -p /blast/bin /blast/lib
-COPY --from=blastbuild /root/ncbi-blast-2.7.1+-src/c++/ReleaseMT/bin /blast/bin
-COPY --from=blastbuild /root/ncbi-blast-2.7.1+-src/c++/ReleaseMT/lib /blast/lib
+##RUN mkdir -p /blast/bin /blast/lib
+##COPY --from=blastbuild /root/ncbi-blast-2.7.1+-src/c++/ReleaseMT/bin /blast/bin
+##COPY --from=blastbuild /root/ncbi-blast-2.7.1+-src/c++/ReleaseMT/lib /blast/lib
+
+# BLAST Build is cumbersome and we will probably use 2.8 anyway.  Just install from binary for now
 
 ## you need an updateable solution for this
 RUN wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-ubuntu64.tar.gz
