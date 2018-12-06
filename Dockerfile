@@ -1,21 +1,25 @@
-FROM christiam/edirect as edirect
-FROM christiam/magicblast as magicblast
-FROM christiam/blast
+FROM ncbi/blast-workbench:0.1 as base
+FROM ubuntu:18.04
 
-RUN apt-get -y -m update && apt-get install -y curl wget zlib1g-dev vmtouch git cpanminus libxml-simple-perl python3-minimal python-pip libwww-perl libnet-perl && rm -rf /var/lib/apt/lists/* && cpanm HTML::Entities
+###############
+# Copy BLAST tools from blast-workbench
 
-COPY --from=edirect /usr/local/ncbi/edirect /root/edirect
-RUN mkdir /magicblast/
-RUN mkdir /magicblast/bin /magicblast/lib
-COPY --from=magicblast /blast/bin/magicblast /magicblast/bin/magicblast.REAL
-#RUN bash magicblast-wrapper.sh /magicblast/bin/magicblast
-#RUN chmod +x /magicblast/bin/magicblast
-#COPY --from=magicblast /blast/lib /magicblast/lib
+COPY --from=base /root/edirect /root/edirect
 
-ENV PATH "/root/edirect:/blast/bin:/magicblast/bin:${PATH}"
-ENV BLASTDB "/blast/blastdb:/blast/blastdb_custom"
+RUN mkdir -p /magicblast/bin /magicblast/lib
+COPY --from=base /magicblast/lib /magicblast/lib
+COPY --from=base /magicblast/bin /magicblast/bin
 
-# this doesnt work yet:
+RUN mkdir -p /blast/bin /blast/lib
+COPY --from=base /blast/lib /blast/lib
+COPY --from=base /blast/bin /blast/bin
+
+###############
+# Set up environment 
+ENV PATH="/root/edirect:/blast/bin:/magicblast/bin:${PATH}"
+ENV BLASTDB="/blast/blastdb:/blast/blastdb_custom"
+
+RUN apt-get -y -m update && apt-get install -y curl wget parallel vmtouch git cpanminus libxml-simple-perl python3-minimal python-pip libwww-perl libnet-perl libjson-perl libgomp1 perl-doc liblmdb-dev && rm -rf /var/lib/apt/lists/* && cpanm HTML::Entities
 
 ## RUN pip install pybedtools
 
@@ -23,9 +27,10 @@ ENV NAMEH htslib
 ENV NAME "samtools"
 
 RUN git clone https://github.com/samtools/htslib.git 
-## cd htslib && \
-## git reset --hard && \
-## make -j 4 
+####  && \
+#cd ${NAMEH} && \
+### git reset --hard ${SHA1H} && \
+#make -j 4 && \
 #cd .. && \
 #cp ./${NAMEH}/tabix /usr/local/bin/ && \
 #cp ./${NAMEH}/bgzip /usr/local/bin/ && \
@@ -35,9 +40,11 @@ RUN git clone https://github.com/samtools/htslib.git
 #strip /usr/local/bin/htsfile; true && 
 
 
-RUN git clone https://github.com/samtools/samtools.git
-#cd samtools && \
-## make -j 4 
+RUN git clone https://github.com/samtools/samtools.git 
+#### && \
+#cd ${NAME} && \
+## git reset --hard ${SHA1} && \
+#make -j 4 && \
 #cp ./${NAME} /usr/local/bin/ && \
 #cd .. && \
 #strip /usr/local/bin/${NAME}; true && \
@@ -47,15 +54,15 @@ RUN git clone https://github.com/samtools/samtools.git
 
 # install SRA toolkit
 
-RUN wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-ubuntu64.tar.gz
+RUN wget -q https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-ubuntu64.tar.gz
 #RUN tar -xvzf 
 
-RUN wget http://eddylab.org/software/hmmer/hmmer.tar.gz
-RUN tar -xvzf hmmer.tar.gz && \
-cd hmmer-3.2.1 && \
-./configure && \
-make && \
-make install
+RUN wget -q http://eddylab.org/software/hmmer/hmmer.tar.gz
+#RUN tar -xvzf hmmer.tar.gz && \
+#cd hmmer-3.2.1 && \
+#./configure && \
+#make && \
+#make install
 
 ## Packages that still need to be installed
 
