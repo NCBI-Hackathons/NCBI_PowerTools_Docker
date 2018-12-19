@@ -1,5 +1,5 @@
 # NCBI_PowerTools_Docker
-A Docker iimage with NCBI and other popular Bioinformatics tools.
+A Docker image with NCBI and other popular Bioinformatics tools.
 
 ## Examples of usage
 
@@ -8,6 +8,8 @@ A Docker iimage with NCBI and other popular Bioinformatics tools.
 
 TODO: Please add other real-world examples.
 
+## Want to help?
+Please see the [TODO](TODO.md) file.
 
 ## Maintainer's notes
 
