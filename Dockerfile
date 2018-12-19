@@ -31,7 +31,7 @@ ENV PATH="/root/edirect:/blast/bin:/magicblast/bin:/usr/local/ncbi/sra-toolkit:$
 ENV BLASTDB="/blast/blastdb:/blast/blastdb_custom"
 
 RUN apt-get -y -m update --fix-missing && apt-get install -y \
-        rsync curl wget zip gawk bzip2 autoconf cmake \
+        curl wget zip gawk bzip2 autoconf cmake rsync \
         parallel bison flex vmtouch git cpanminus fuse \
         zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev \
         libidn11 libgomp1 liblmdb-dev libxml2-utils \
@@ -59,6 +59,8 @@ RUN wget -q https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.9.2/hisat2-2.1.0-64-ngs
     echo -e "export PATH=/opt/hisat2:\$PATH\nexport HISAT2_HOME=/opt/hisat2" > /etc/profile.d/hisat2.sh && \
     chmod 755 /etc/profile.d/hisat2.sh && \
     rm hisat2-2.1.0-64-ngs.2.9.2.zip
+ENV PATH="/opt/hisat2:${PATH}"
+ENV HISAT2_HOME=/opt/hisat2
 
 ###############
 # HTS Lib
@@ -100,7 +102,6 @@ RUN wget -q https://github.com/samtools/bcftools/releases/download/1.9/bcftools-
 
 ###############
 # Skesa and aux NCBI tools
-# FIXME: can this be made public and not rely on gsutil?
 #RUN gsutil cp gs://ncbi_hackathon_aux_tools/* /usr/bin && \
 #    chmod 755 /usr/bin/skesa && \
 #    chmod 755 /usr/bin/guidedassembler_graph && \
@@ -115,6 +116,7 @@ RUN wget -q https://repo.anaconda.com/archive/Anaconda2-5.3.1-Linux-x86_64.sh &&
     rm ./Anaconda2-5.3.1-Linux-x86_64.sh && \
     echo -e "export PATH=\$PATH:/opt/anaconda2/bin\nexport JAVA_HOME=/opt/anaconda2" > /etc/profile.d/anaconda2.sh && \
     chmod 755 /etc/profile.d/anaconda2.sh
+ENV PATH="/opt/anaconda2/bin:${PATH}"
 
 ###############
 # GATK, BWA, minimap2, bowtie2, HMMER, DESeq2
@@ -155,6 +157,9 @@ RUN wget -q https://github.com/broadinstitute/picard/releases/download/2.18.17/p
     chmod 755 /opt/picard/picard && \
     chmod 755 /opt/picard/picardcloud && \
     chmod 755 /etc/profile.d/picard.sh
+ENV PICARD=/opt/picard/picard.jar
+ENV PICARDCLOUD=/opt/picard/picardcloud.jar
+ENV PATH="/opt/picard:${PATH}"
 
 ###############
 # STAR 2.6.0
@@ -166,12 +171,14 @@ RUN wget -q https://github.com/alexdobin/STAR/archive/2.6.0a.tar.gz && \
     ln -s /opt/STAR-2.6.0a/bin/Linux_x86_64_static/STARlong /opt/STAR-2.6.0a/bin/STARlong && \
     echo -e "export PATH=/opt/STAR-2.6.0a/bin:\$PATH" > /etc/profile.d/STAR.sh && \
     chmod 755 /etc/profile.d/STAR.sh
+ENV PATH="/opt/START-2.6.0a/bin:${PATH}"
 
 ###############
 # abyss
-RUN apt-get -qqy install abyss && \
-    echo -e "export PATH=/usr/lib/abyss:\$PATH" > /etc/profile.d/abyss.sh && \
-    chmod 755 /etc/profile.d/abyss.sh
+# FIXME: not found
+#RUN apt-get -qqy install abyss && \
+#    echo -e "export PATH=/usr/lib/abyss:\$PATH" > /etc/profile.d/abyss.sh && \
+#    chmod 755 /etc/profile.d/abyss.sh
 
 ###############
 # plink-ng
@@ -188,10 +195,10 @@ RUN wget -q http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cuffli
     mv ./cufflinks-2.2.1.Linux_x86_64 /opt && \
     echo -e "export PATH=/opt/cufflinks-2.2.1.Linux_x86_64:\$PATH" > /etc/profile.d/cufflinks.sh && \
     chmod 755 /etc/profile.d/cufflinks.sh
+ENV PATH="/opt/cufflinks-2.2.1.Linux_x86_64:${PATH}"
 
 ###############
 # Cytoscape
-# FIXME
 #ENV INSTALL4J_JAVA_HOME=/opt/anaconda2
 #RUN wget -q https://github.com/cytoscape/cytoscape/releases/download/3.7.0/Cytoscape_3_7_0_unix.sh && \
 #    chmod 755 ./Cytoscape_3_7_0_unix.sh && \
@@ -219,6 +226,7 @@ RUN wget -q http://ccb.jhu.edu/software/tophat/downloads/tophat-2.1.1.Linux_x86_
     mv ./tophat-2.1.1.Linux_x86_64 /opt && \
     echo -e "export PATH=/opt/tophat-2.1.1.Linux_x86_64:\$PATH" > /etc/profile.d/tophat.sh && \
     chmod 755 /etc/profile.d/tophat.sh
+ENV PATH="/opt/tophat-2.1.1.Linux_x86_64:${PATH}"
 
 ###############
 # FastQC
@@ -229,6 +237,7 @@ RUN wget -q https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.
     mv ./FastQC /opt && \
     echo -e "export PATH=/opt/FastQC:\$PATH" > /etc/profile.d/FastQC.sh && \
     chmod 755 /etc/profile.d/FastQC.sh
+ENV PATH="/opt/FastQC:${PATH}"
 
 ###############
 # MrBayes
@@ -258,6 +267,7 @@ RUN wget -q https://github.com/trinityrnaseq/trinityrnaseq/archive/Trinity-v2.8.
     ln -s /usr/local/bin/trinityrnaseq-Trinity-v2.8.4/Trinity /usr/local/bin/Trinity && \
     echo -e "export TRINITY_HOME=/usr/local/bin" > /etc/profile.d/trinityrnaseq.sh && \
     chmod 755 /etc/profile.d/trinityrnaseq.sh
+ENV PATH="/usr/local/bin:${PATH}"
 
 
 #RUN wget -q http://eddylab.org/software/hmmer/hmmer.tar.gz
