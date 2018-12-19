@@ -3,25 +3,35 @@
 # Created: Wed 05 Dec 2018 04:33:34 PM EST
 
 SHELL=/bin/bash
-.PHONY: all build check clean
+.PHONY: all build publish check clean
 
 USERNAME?=christiam
-IMG=ncbi-power-tools
+IMG=bioinformatics-power-tools
+VERSION?=0.1
 
 all: check
 
 build:
-	docker build -t ${USERNAME}/${IMG} .
+	docker build -t ${USERNAME}/${IMG}:${VERSION} .
+	docker tag ${USERNAME}/${IMG}:${VERSION} ${USERNAME}/${IMG}:latest
+
+publish: build
+	docker push ${USERNAME}/${IMG}:${VERSION}
+	docker push ${USERNAME}/${IMG}:latest
 
 check: build
-	time docker run --rm ${USERNAME}/${IMG} /bin/bash -c "printenv BLASTDB"
-	time docker run --rm ${USERNAME}/${IMG} blastn -version
-	time docker run --rm ${USERNAME}/${IMG} magicblast -version
-	time docker run --rm ${USERNAME}/${IMG} installconfirm
-	time docker run --rm ${USERNAME}/${IMG} efetch -db nucleotide -id u00001 -format fasta
-	time docker run --rm ${USERNAME}/${IMG} get_species_taxids.sh -n squirrel
-	time docker run --rm ${USERNAME}/${IMG} update_blastdb.pl --source gcp --showall
-	time docker run --rm ${USERNAME}/${IMG} update_blastdb.pl --source gcp taxdb
+	docker run --rm -dti ${USERNAME}/${IMG}:${VERSION} sleep infinity
+	time docker exec `docker ps -lq` /bin/bash -c "printenv BLASTDB"
+	time docker exec `docker ps -lq` blastn -version
+	time docker exec `docker ps -lq` magicblast -version
+	time docker exec `docker ps -lq` installconfirm
+	time docker exec `docker ps -lq` efetch -db nucleotide -id u00001 -format fasta
+	time docker exec `docker ps -lq` get_species_taxids.sh -n squirrel
+	#time docker exec `docker ps -lq` update_blastdb.pl --source gcp --showall
+	#time docker exec `docker ps -lq` update_blastdb.pl --source gcp taxdb
+	time docker exec `docker ps -lq` fastq-dump --stdout SRR390728 | head -n 8
+	time docker exec `docker ps -lq` bioawk -h
+	docker rm -f `docker ps -lq`
 
 clean:
-	docker image rm ${USERNAME}/${IMG}
+	docker image rm ${USERNAME}/${IMG}:${VERSION} ${USERNAME}/${IMG}:latest
