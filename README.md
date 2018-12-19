@@ -1,6 +1,14 @@
 # NCBI_PowerTools_Docker
 A Docker iimage with NCBI and other popular Bioinformatics tools.
 
+## Examples of usage
+
+1. Check BLAST version
+  `docker run --rm -it christiam/bioinformatics-power-tools blastn -version`
+
+TODO: Please add other real-world examples.
+
+
 ## Maintainer's notes
 
 A `Makefile` is provided to conveniently maintain this docker image. In the

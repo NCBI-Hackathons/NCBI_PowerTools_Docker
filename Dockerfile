@@ -1,5 +1,6 @@
 FROM ncbi/workbench:0.1 as base
 FROM ubuntu:18.04
+ARG num_procs=8
 
 LABEL Description="NCBI Hackathons Bioinformatics tools" \
       Vendor="NCBI/NLM/NIH" \
@@ -38,7 +39,8 @@ RUN apt-get -y -m update --fix-missing && apt-get install -y \
         python3-minimal python-pip python3-flask python3-pip \
         python-pyasn1 python-pyasn1-modules \
         libxml-simple-perl libwww-perl libnet-perl libjson-perl perl-doc && \
-        rm -rf /var/lib/apt/lists/* && cpanm HTML::Entities
+        cpanm -l /root/edirect/aux HTML::Entities && \
+        rm -rf /var/lib/apt/lists/* 
 
 
 ###############
@@ -69,7 +71,7 @@ RUN wget -q https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.
     rm htslib-1.9.tar.bz2 && \
     cd htslib-1.9 && \
     ./configure >/dev/null && \
-    make --quiet && \
+    make -j ${num_procs} --quiet && \
     make --quiet install && \
     cd .. && \
     rm -rf ./htslib-1.9
@@ -83,7 +85,7 @@ RUN wget -q https://github.com/samtools/samtools/releases/download/1.9/samtools-
     rm samtools-1.9.tar.bz2 && \
     cd samtools-1.9 && \
     ./configure --without-curses >/dev/null && \
-    make --quiet && \
+    make -j ${num_procs} --quiet && \
     make --quiet install && \
     cd .. && \
     rm -rf ./samtools-1.9
@@ -95,7 +97,7 @@ RUN wget -q https://github.com/samtools/bcftools/releases/download/1.9/bcftools-
     rm bcftools-1.9.tar.bz2 && \
     cd bcftools-1.9 && \
     ./configure --without-curses >/dev/null && \
-    make --quiet && \
+    make -j ${num_procs} --quiet && \
     make --quiet install && \
     cd .. && \
     rm -rf ./bcftools-1.9
@@ -213,7 +215,7 @@ RUN wget -q https://www.ebi.ac.uk/~zerbino/velvet/velvet_1.2.10.tgz && \
     tar -xzf velvet_1.2.10.tgz && \
     rm velvet_1.2.10.tgz && \
     cd velvet_1.2.10 && \
-    make --quiet && \
+    make -j ${num_procs} --quiet && \
     cp velvetg velveth /usr/bin && \
     cd .. && \
     rm -rf velvet_1.2.10
@@ -247,7 +249,7 @@ RUN wget -q https://github.com/NBISweden/MrBayes/raw/v3.2.6/mrbayes-3.2.6.tar.gz
     cd ./mrbayes-3.2.6/src && \
     autoconf && \
     ./configure --with-beagle=no >/dev/null && \
-    make --quiet && \
+    make -j ${num_procs} --quiet && \
     make --quiet install
 
 ###############
@@ -262,7 +264,7 @@ RUN wget -q http://www.clustal.org/omega/clustalo-1.2.4-Ubuntu-x86_64 && \
 RUN wget -q https://github.com/trinityrnaseq/trinityrnaseq/archive/Trinity-v2.8.4.tar.gz && \
     tar -xzf Trinity-v2.8.4.tar.gz && \
     cd ./trinityrnaseq-Trinity-v2.8.4 && \
-    make --quiet && \
+    make -j ${num_procs} --quiet && \
     make --quiet install && \
     ln -s /usr/local/bin/trinityrnaseq-Trinity-v2.8.4/Trinity /usr/local/bin/Trinity && \
     echo -e "export TRINITY_HOME=/usr/local/bin" > /etc/profile.d/trinityrnaseq.sh && \
@@ -274,11 +276,13 @@ ENV PATH="/usr/local/bin:${PATH}"
 #RUN tar -xvzf hmmer.tar.gz && \
 #cd hmmer-3.2.1 && \
 #./configure && \
-#make && \
+#make -j ${num_procs} && \
 #make install
 
 ## Packages that still need to be installed
 
 ## this may be helpful: https://mfr.osf.io/render?url=https://osf.io/tf2mn/?action=download%26mode=render
+
+#FIXME: use builder pattern 
 
 CMD ["/bin/bash"]
