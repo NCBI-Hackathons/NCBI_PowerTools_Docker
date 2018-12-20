@@ -1,6 +1,8 @@
 # NCBI_PowerTools_Docker
 A Docker image with NCBI and other popular Bioinformatics tools.
 
+**Please note**: _this is work in progress_
+
 ## Examples of usage
 
 1. Check BLAST version
