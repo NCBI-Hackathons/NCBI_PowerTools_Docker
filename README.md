@@ -4,7 +4,7 @@ A Docker image with NCBI and other popular Bioinformatics tools.
 ## Examples of usage
 
 1. Check BLAST version
-  `docker run --rm -it christiam/bioinformatics-power-tools blastn -version`
+  `docker run --rm -it ncbihackathons/bioinfo_power_tools blastn -version`
 
 TODO: Please add other real-world examples.
 

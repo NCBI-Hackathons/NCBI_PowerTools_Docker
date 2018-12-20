@@ -5,8 +5,8 @@
 SHELL=/bin/bash
 .PHONY: all build publish check clean
 
-USERNAME?=christiam
-IMG=bioinformatics-power-tools
+USERNAME?=ncbihackathons
+IMG=bioinfo_power_tools
 VERSION?=0.1
 NP=$(shell grep -c proc /proc/cpuinfo)
 
