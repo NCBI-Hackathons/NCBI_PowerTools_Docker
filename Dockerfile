@@ -118,7 +118,7 @@ RUN wget -q https://repo.anaconda.com/archive/Anaconda2-5.3.1-Linux-x86_64.sh &&
     rm ./Anaconda2-5.3.1-Linux-x86_64.sh && \
     echo -e "export PATH=\$PATH:/opt/anaconda2/bin\nexport JAVA_HOME=/opt/anaconda2" > /etc/profile.d/anaconda2.sh && \
     chmod 755 /etc/profile.d/anaconda2.sh
-ENV PATH="/opt/anaconda2/bin:${PATH}"
+ENV PATH="${PATH}:/opt/anaconda2/bin"
 
 ###############
 # GATK, BWA, minimap2, bowtie2, HMMER, DESeq2
@@ -184,9 +184,9 @@ ENV PATH="/opt/START-2.6.0a/bin:${PATH}"
 
 ###############
 # plink-ng
-RUN wget -q http://s3.amazonaws.com/plink2-assets/plink2_linux_x86_64_20181028.zip && \
-    unzip -qq plink2_linux_x86_64_20181028.zip && \
-    rm plink2_linux_x86_64_20181028.zip && \
+RUN wget -q http://s3.amazonaws.com/plink2-assets/plink2_linux_x86_64_20181227.zip && \
+    unzip -qq plink2_linux_x86_64_20181227.zip && \
+    rm plink2_linux_x86_64_20181227.zip && \
     mv ./plink2 /usr/bin
 
 ###############
