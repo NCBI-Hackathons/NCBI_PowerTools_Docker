@@ -25,8 +25,8 @@ check:
 	time docker exec `docker ps -lq` /bin/bash -c "printenv BLASTDB"
 	time docker exec `docker ps -lq` blastn -version
 	time docker exec `docker ps -lq` magicblast -version
-	#time docker exec `docker ps -lq` installconfirm
-	#time docker exec `docker ps -lq` efetch -db nucleotide -id u00001 -format fasta
+	time docker exec `docker ps -lq` installconfirm
+	time docker exec `docker ps -lq` efetch -db nucleotide -id u00001 -format fasta
 	#time docker exec `docker ps -lq` get_species_taxids.sh -n squirrel
 	#time docker exec `docker ps -lq` update_blastdb.pl --source gcp --showall
 	#time docker exec `docker ps -lq` update_blastdb.pl --source gcp taxdb
